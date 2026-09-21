@@ -16,7 +16,7 @@ class Category:
         self.ledger.append({'amount': amount, 'description': description})
 
     def withdraw(self, amount, description=""):
-        """Retire un montant de la catégorie si les fonds sont suffisants."""
+        """Retire un montant de la catégorie si les fonds sont suffiscents."""
         if amount > self.get_balance():
             return False
         self.ledger.append({'amount': -amount, 'description': description})
@@ -83,7 +83,8 @@ def create_spend_chart(categories):
     longest_name = max((len(category.name)
                        for category in categories), default=0)
 
-    for index in range(longest_//name):
+    # CORRECTION ICI : longest_name au lieu de longest_//name
+    for index in range(longest_name):
         chart += "     "
         for category in categories:
             chart += (category.name[index] if index <
@@ -91,3 +92,39 @@ def create_spend_chart(categories):
         chart += "\n"
 
     return chart.rstrip("\n")
+
+
+# ==========================================
+# BLOC DE TEST
+# ==========================================
+if __name__ == "__main__":
+    # 1. Création des catégories
+    food = Category("Food")
+    clothing = Category("Clothing")
+    auto = Category("Auto")
+
+    # 2. Opérations sur "Food"
+    food.deposit(100, "initial deposit")
+    food.withdraw(10.25, "groceries")
+    food.withdraw(14.50, "restaurant")
+
+    # 3. Opérations sur "Clothing"
+    clothing.deposit(200, "initial deposit")
+    clothing.withdraw(50, "new shoes")
+
+    # 4. Opérations sur "Auto"
+    auto.deposit(300, "initial deposit")
+    auto.withdraw(60, "fuel")
+    auto.withdraw(100, "oil change")
+
+    # 5. Un transfert
+    food.transfer(10, clothing)
+
+    # --- AFFICHAGE POUR LE RENDEMENT FINAL ---
+    print(food)
+    print("\n" + "-"*30 + "\n")
+    print(clothing)
+    print("\n" + "-"*30 + "\n")
+    print(auto)
+    print("\n" + "="*40 + "\n")
+    print(create_spend_chart([food, clothing, auto]))
